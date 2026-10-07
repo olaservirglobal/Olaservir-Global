@@ -237,7 +237,7 @@ export default function CheckoutPage() {
 
       <div className="mx-auto max-w-5xl">
         <a href="/" className="mb-6 flex items-center gap-2">
-          <img src="/images/LOGO.png" alt="Olaservir" className="h-8 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+          <img src="/IMAGES/LOGO.png" alt="Olaservir" className="h-8 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
           <span className="text-xl font-extrabold tracking-tight text-[#172236]">Olaservir</span>
         </a>
 

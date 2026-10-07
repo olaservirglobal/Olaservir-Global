@@ -203,15 +203,15 @@ export default function Home() {
 
   type ImageMap = Record<string, string>;
   const [categoryImages, setCategoryImages] = useState<ImageMap>({
-    shirts: "/images/White%20Shirt%206.jpg",
-    trousers: "/images/Black%20Trouser%201.jpg",
-    shoes: "/images/Black%20Shoe%203.jpg",
-    belts: "/images/Black%20Belt%20A3.jpg",
+    shirts: "/IMAGES/White%20Shirt%206.jpg",
+    trousers: "/IMAGES/Black%20Trouser%201.jpg",
+    shoes: "/IMAGES/Black%20Shoe%203.jpg",
+    belts: "/IMAGES/Black%20Belt%20A3.jpg",
   });
   const [heroImages, setHeroImages] = useState<ImageMap>({
-    "hero-slide-1": "/images/Mixed%20Trousers%201.jpg",
-    "hero-slide-2": "/images/Brown%20Shoe%201.jpg",
-    "hero-slide-3": "/images/Black%20Belt%20A3.jpg",
+    "hero-slide-1": "/IMAGES/Mixed%20Trousers%201.jpg",
+    "hero-slide-2": "/IMAGES/Brown%20Shoe%201.jpg",
+    "hero-slide-3": "/IMAGES/Black%20Belt%20A3.jpg",
   });
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
@@ -677,7 +677,7 @@ export default function Home() {
       `}</style>
 
       <img
-        src="/images/LOGO.png"
+        src="/IMAGES/LOGO.png"
         alt="Olaservir"
         className="olaservir-logo-pop h-28 w-28 object-contain sm:h-36 sm:w-36"
         onError={(e) => {
@@ -729,7 +729,7 @@ export default function Home() {
       <main className="flex min-h-screen w-full flex-col items-center justify-center bg-[#FAFBFD] px-4 py-12" style={{ fontFamily: FONT_STACK }}>
         {introOverlay}
         <button onClick={() => { setAuthView("store"); setAuthError(""); setAuthInfo(""); }} className="mb-8 flex items-center gap-2">
-          <img src="/images/LOGO.png" alt="Olaservir" className="h-8 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+          <img src="/IMAGES/LOGO.png" alt="Olaservir" className="h-8 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
           <span className="text-xl font-extrabold tracking-tight text-[#172236]">Olaservir</span>
         </button>
 
@@ -852,7 +852,7 @@ export default function Home() {
       <main className="flex min-h-screen w-full flex-col items-center justify-center bg-[#FAFBFD] px-4 py-12" style={{ fontFamily: FONT_STACK }}>
         {introOverlay}
         <button onClick={() => setAuthView("store")} className="mb-8 flex items-center gap-2">
-          <img src="/images/LOGO.png" alt="Olaservir" className="h-8 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+          <img src="/IMAGES/LOGO.png" alt="Olaservir" className="h-8 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
           <span className="text-xl font-extrabold tracking-tight text-[#172236]">Olaservir</span>
         </button>
 
@@ -944,7 +944,7 @@ export default function Home() {
       <main className="flex min-h-screen w-full flex-col items-center justify-center bg-[#FAFBFD] px-4 py-12" style={{ fontFamily: FONT_STACK }}>
         {introOverlay}
         <div className="mb-8 flex items-center gap-2">
-          <img src="/images/LOGO.png" alt="Olaservir" className="h-8 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+          <img src="/IMAGES/LOGO.png" alt="Olaservir" className="h-8 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
           <span className="text-xl font-extrabold tracking-tight text-[#172236]">Olaservir</span>
         </div>
 
@@ -1096,7 +1096,7 @@ export default function Home() {
 
         <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-4 sm:px-6 lg:px-10">
           <a href="#" className="flex shrink-0 items-center gap-2">
-            <img src="/images/LOGO.png" alt="Olaservir" className="h-9 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+            <img src="/IMAGES/LOGO.png" alt="Olaservir" className="h-9 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
             <span className="text-2xl font-extrabold tracking-tight text-[#172236]">Olaservir</span>
           </a>
 
