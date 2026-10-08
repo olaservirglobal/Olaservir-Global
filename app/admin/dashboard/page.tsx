@@ -65,7 +65,7 @@ type Order = {
   state: string;
   items: OrderItem[];
   total: number;
-  status: "confirmed" | "shipped" | "delivered";
+  status: "pending" | "confirmed" | "shipped" | "delivered" | "failed";
   created_at: string;
   shipped_at: string | null;
   delivered_at: string | null;
@@ -138,6 +138,10 @@ export default function AdminDashboard() {
     const { data, error } = await supabase
       .from("orders")
       .select("*")
+      // "pending" orders are checkouts that were started but never actually
+      // paid for (abandoned, or payment failed) — they don't belong in
+      // sales totals or the orders queue. Only show ones that were paid.
+      .in("status", ["confirmed", "shipped", "delivered"])
       .order("created_at", { ascending: false });
     if (!error && data) setOrders(data as Order[]);
     setLoadingOrders(false);
@@ -169,12 +173,16 @@ export default function AdminDashboard() {
 
   const statusBadge = (status: Order["status"]) => {
     const map = {
+      pending: { label: "Pending Payment", classes: "bg-gray-100 text-gray-600" },
       confirmed: { label: "Awaiting Shipment", classes: "bg-amber-50 text-amber-700" },
       shipped: { label: "In Transit (Bolt)", classes: "bg-blue-50 text-blue-700" },
       delivered: { label: "Completed", classes: "bg-green-50 text-green-700" },
+      failed: { label: "Failed", classes: "bg-red-50 text-red-700" },
     } as const;
-    const { label, classes } = map[status];
-    return <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${classes}`}>{label}</span>;
+    // Fall back instead of crashing if an order ever shows up with a status
+    // we don't have a badge for yet.
+    const entry = map[status as keyof typeof map] ?? { label: status ?? "Unknown", classes: "bg-gray-100 text-gray-600" };
+    return <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${entry.classes}`}>{entry.label}</span>;
   };
 
   // ---------- Products ----------

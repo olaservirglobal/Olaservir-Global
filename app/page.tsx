@@ -126,11 +126,21 @@ export default function Home() {
   const [active, setActive] = useState<string>("Home");
   const [underline, setUnderline] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
 
-  const [introVisible, setIntroVisible] = useState(true);
-  const [introMounted, setIntroMounted] = useState(true);
+  const [introVisible, setIntroVisible] = useState(false);
+  const [introMounted, setIntroMounted] = useState(false);
   const [locationChoice, setLocationChoice] = useState<"ask" | "yes" | "no">("ask");
 
   useEffect(() => {
+    // Only play the splash once per browser tab — if it already ran earlier
+    // in this session (e.g. they're just navigating back to the homepage),
+    // skip it entirely instead of replaying it.
+    const alreadyShown = sessionStorage.getItem("olaservir_intro_shown");
+    if (alreadyShown) return;
+
+    sessionStorage.setItem("olaservir_intro_shown", "1");
+    setIntroVisible(true);
+    setIntroMounted(true);
+
     const fadeTimer = setTimeout(() => setIntroVisible(false), 2400);
     const unmountTimer = setTimeout(() => setIntroMounted(false), 3000);
     return () => {
@@ -153,11 +163,24 @@ export default function Home() {
       });
   }, []);
 
-  // Available Products = every item, always.
+  // When someone clicks a category card, this holds that category's name
+  // (e.g. "Shirts") and Available Products below is filtered down to just
+  // that category. null = show everything, the normal state.
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+
+  const goToCategory = (name: string) => {
+    setCategoryFilter(name);
+    document.getElementById("available-products")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  // Available Products = every item, unless a category filter is active.
   // New Arrivals = only items created in the last 24 hours (they also still
   // show up in Available Products — being "new" doesn't remove them from
   // the full catalog, it's just an extra highlight).
-  const availableProducts = liveProducts;
+  const availableProducts = useMemo(() => {
+    if (!categoryFilter) return liveProducts;
+    return liveProducts.filter((p) => p.category.toLowerCase() === categoryFilter.toLowerCase());
+  }, [liveProducts, categoryFilter]);
   const newArrivals = useMemo(() => {
     const cutoff = Date.now() - NEW_ARRIVAL_WINDOW_MS;
     return liveProducts.filter((p) => new Date(p.created_at).getTime() >= cutoff);
@@ -1327,7 +1350,7 @@ export default function Home() {
       <section className="w-full bg-[#FAFBFD] px-4 py-6 sm:px-8 lg:px-12">
         <div className="mx-auto grid max-w-[1600px] grid-cols-1 items-center gap-10 rounded-3xl bg-gradient-to-r from-[#E7E5E1] to-[#E2F4FF] px-6 py-12 sm:px-10 lg:grid-cols-2 lg:gap-6 lg:py-16">
           <div className="max-w-xl">
-            <p className="text-xs font-semibold tracking-[0.2em] text-[#172236]/60">NEW COLLECTION 2025</p>
+            <p className="text-xs font-semibold tracking-[0.2em] text-[#172236]/60">NEW COLLECTION 2026</p>
 
             <h1 className="mt-3 text-5xl font-extrabold leading-[1.05] tracking-tight text-[#172236] sm:text-6xl">
               Shop your everyday
@@ -1348,6 +1371,11 @@ export default function Home() {
                 Explore Deals
               </button>
             </div>
+
+            <p className="mt-4 flex max-w-md items-start gap-2 text-sm text-[#172236]/70">
+              <Truck size={16} className="mt-0.5 shrink-0" />
+              Deliveries are done using Bolt and the charges are the responsibility of the customer.
+            </p>
           </div>
 
           <div className="relative h-[320px] w-full overflow-hidden rounded-2xl bg-white/50 sm:h-[420px] lg:h-[480px]">

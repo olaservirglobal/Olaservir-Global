@@ -327,6 +327,10 @@ export default function CheckoutPage() {
               {submitting ? "Processing…" : `Pay ₦${total.toLocaleString()}`}
             </button>
 
+            <p className="mt-3 text-center text-xs text-[#172236]/70">
+              Deliveries are done using Bolt and the charges are the responsibility of the customer.
+            </p>
+
             <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-[#172236]/50">
               <ShieldCheck size={13} />
               Secured by Paystack
