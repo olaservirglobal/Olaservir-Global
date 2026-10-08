@@ -149,6 +149,21 @@ export default function Home() {
     };
   }, []);
 
+  // Remember whether they already answered the "Lagos only" prompt this
+  // session, so it doesn't pop back up every time they return to the
+  // homepage (e.g. after viewing a product and clicking back).
+  useEffect(() => {
+    const saved = sessionStorage.getItem("olaservir_location_choice");
+    if (saved === "yes" || saved === "no") {
+      setLocationChoice(saved);
+    }
+  }, []);
+
+  const chooseLocation = (choice: "yes" | "no") => {
+    setLocationChoice(choice);
+    sessionStorage.setItem("olaservir_location_choice", choice);
+  };
+
   const [liveProducts, setLiveProducts] = useState<LiveProduct[]>([]);
   const [productsLoading, setProductsLoading] = useState(true);
 
@@ -1082,13 +1097,13 @@ export default function Home() {
                 </p>
                 <div className="mt-6 flex gap-3">
                   <button
-                    onClick={() => setLocationChoice("no")}
+                    onClick={() => chooseLocation("no")}
                     className="flex-1 rounded-lg border border-[#E7E5E1] py-3 text-sm font-semibold text-[#172236] transition-colors hover:bg-[#E7E5E1]"
                   >
                     No
                   </button>
                   <button
-                    onClick={() => setLocationChoice("yes")}
+                    onClick={() => chooseLocation("yes")}
                     className="flex-1 rounded-lg bg-[#172236] py-3 text-sm font-semibold text-white transition-colors hover:bg-[#000109]"
                   >
                     Yes
@@ -1452,7 +1467,15 @@ export default function Home() {
               const refKey = `cat-${key}`;
               const image = categoryImages[key];
               return (
-                <div key={name} id={refKey} className="overflow-hidden rounded-xl border border-[#E7E5E1] bg-white text-left transition-all duration-300 hover:z-10 hover:scale-105 hover:shadow-md">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  key={name}
+                  id={refKey}
+                  onClick={() => goToCategory(name)}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goToCategory(name); } }}
+                  className="cursor-pointer overflow-hidden rounded-xl border border-[#E7E5E1] bg-white text-left transition-all duration-300 hover:z-10 hover:scale-105 hover:shadow-md"
+                >
                   <div className="group/image relative aspect-square w-full overflow-hidden bg-[#E7E5E1]">
                     {image ? (
                       <img src={image} alt={name} className="h-full w-full object-cover" />
@@ -1462,13 +1485,13 @@ export default function Home() {
                     <button
                       type="button"
                       aria-label={`Upload image for ${name}`}
-                      onClick={() => fileInputRefs.current[refKey]?.click()}
+                      onClick={(e) => { e.stopPropagation(); fileInputRefs.current[refKey]?.click(); }}
                       className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1.5 text-[11px] font-medium text-[#172236] opacity-0 shadow-sm transition-opacity group-hover/image:opacity-100"
                     >
                       <ImagePlus size={13} />
                       {image ? "Replace" : "Upload"}
                     </button>
-                    <input ref={(el) => { fileInputRefs.current[refKey] = el; }} type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, key, setCategoryImages)} />
+                    <input ref={(el) => { fileInputRefs.current[refKey] = el; }} type="file" accept="image/*" className="hidden" onClick={(e) => e.stopPropagation()} onChange={(e) => handleImageUpload(e, key, setCategoryImages)} />
                   </div>
                   <div className="px-4 py-3">
                     <p className="text-sm font-semibold text-[#172236]">{name}</p>
@@ -1484,17 +1507,34 @@ export default function Home() {
       <section id="available-products" className="w-full bg-[#FAFBFD] px-6 pb-16 sm:px-10 lg:px-12">
         <div className="mx-auto max-w-[1600px]">
           <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-2xl font-extrabold text-[#172236] sm:text-3xl">Available Products</h2>
-            <a href="#" className="flex items-center gap-1 text-sm font-medium text-[#172236]/80 hover:text-[#172236]">
-              View All Products
-              <ArrowRight size={15} />
-            </a>
+            <div>
+              <h2 className="text-2xl font-extrabold text-[#172236] sm:text-3xl">
+                {categoryFilter ? `Available Products — ${categoryFilter}` : "Available Products"}
+              </h2>
+              {categoryFilter && (
+                <button
+                  type="button"
+                  onClick={() => setCategoryFilter(null)}
+                  className="mt-1 text-sm font-medium text-[#172236]/60 underline hover:text-[#172236]"
+                >
+                  Clear filter, show everything
+                </button>
+              )}
+            </div>
+            {!categoryFilter && (
+              <a href="#" className="flex items-center gap-1 text-sm font-medium text-[#172236]/80 hover:text-[#172236]">
+                View All Products
+                <ArrowRight size={15} />
+              </a>
+            )}
           </div>
 
           {productsLoading ? (
             <p className="text-sm text-[#172236]/60">Loading products…</p>
           ) : availableProducts.length === 0 ? (
-            <p className="text-sm text-[#172236]/60">No products listed yet.</p>
+            <p className="text-sm text-[#172236]/60">
+              {categoryFilter ? `No products in ${categoryFilter} yet.` : "No products listed yet."}
+            </p>
           ) : (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
               {availableProducts.map((product) => renderProductCard(product, false))}
