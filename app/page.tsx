@@ -251,22 +251,6 @@ export default function Home() {
     "hero-slide-2": "/images/Brown%20Shoe%201.jpg",
     "hero-slide-3": "/images/Black%20Belt%20A3.jpg",
   });
-  const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
-
-  const handleImageUpload = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    key: string,
-    setter: React.Dispatch<React.SetStateAction<ImageMap>>
-  ) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      setter((prev) => ({ ...prev, [key]: reader.result as string }));
-    };
-    reader.readAsDataURL(file);
-    e.target.value = "";
-  };
 
   const [heroSlide, setHeroSlide] = useState(0);
   useEffect(() => {
@@ -1411,17 +1395,6 @@ export default function Home() {
                       <span className="text-xs font-medium">Image placeholder {i + 1} of {HERO_SLOTS.length}</span>
                     </div>
                   )}
-
-                  <button
-                    type="button"
-                    aria-label={`Upload hero image ${i + 1}`}
-                    onClick={() => fileInputRefs.current[slotKey]?.click()}
-                    className="absolute bottom-4 left-4 flex items-center gap-1 rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-medium text-[#172236] opacity-0 shadow-sm transition-opacity group-hover/image:opacity-100"
-                  >
-                    <ImagePlus size={13} />
-                    {image ? "Replace" : "Upload"}
-                  </button>
-                  <input ref={(el) => { fileInputRefs.current[slotKey] = el; }} type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, slotKey, setHeroImages)} />
                 </div>
               );
             })}
@@ -1476,22 +1449,12 @@ export default function Home() {
                   onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goToCategory(name); } }}
                   className="cursor-pointer overflow-hidden rounded-xl border border-[#E7E5E1] bg-white text-left transition-all duration-300 hover:z-10 hover:scale-105 hover:shadow-md"
                 >
-                  <div className="group/image relative aspect-square w-full overflow-hidden bg-[#E7E5E1]">
+                  <div className="relative aspect-square w-full overflow-hidden bg-[#E7E5E1]">
                     {image ? (
                       <img src={image} alt={name} className="h-full w-full object-cover" />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center text-xs text-[#172236]/40">Image</div>
                     )}
-                    <button
-                      type="button"
-                      aria-label={`Upload image for ${name}`}
-                      onClick={(e) => { e.stopPropagation(); fileInputRefs.current[refKey]?.click(); }}
-                      className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1.5 text-[11px] font-medium text-[#172236] opacity-0 shadow-sm transition-opacity group-hover/image:opacity-100"
-                    >
-                      <ImagePlus size={13} />
-                      {image ? "Replace" : "Upload"}
-                    </button>
-                    <input ref={(el) => { fileInputRefs.current[refKey] = el; }} type="file" accept="image/*" className="hidden" onClick={(e) => e.stopPropagation()} onChange={(e) => handleImageUpload(e, key, setCategoryImages)} />
                   </div>
                   <div className="px-4 py-3">
                     <p className="text-sm font-semibold text-[#172236]">{name}</p>
