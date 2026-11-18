@@ -116,7 +116,7 @@ type AppUser = { id: string; name: string; email: string; role: UserRole };
 const roleForEmail = (email: string): UserRole =>
   email.toLowerCase() === SELLER_EMAIL.toLowerCase() ? "seller" : "buyer";
 
-const HERO_SLOTS = ["hero-slide-1", "hero-slide-2", "hero-slide-3"];
+const HERO_SLOTS = ["hero-slide-1", "hero-slide-2", "hero-slide-3", "hero-slide-4"];
 const HERO_ROTATE_MS = 3200;
 
 // A product counts as "new" if it was created within this many milliseconds.
@@ -241,15 +241,16 @@ export default function Home() {
 
   type ImageMap = Record<string, string>;
   const [categoryImages, setCategoryImages] = useState<ImageMap>({
-    shirts: "/images/White%20Shirt%206.jpg",
-    trousers: "/images/Black%20Trouser%201.jpg",
-    shoes: "/images/Black%20Shoe%203.jpg",
+    shirts: "/images/White%20Shirt%20a.png",
+    trousers: "/images/Dark%20Blue%20Trouser%20a.png",
+    shoes: "/images/Black%20Shoe%201.png",
     belts: "/images/Black%20Belt%20A3.jpg",
   });
   const [heroImages, setHeroImages] = useState<ImageMap>({
-    "hero-slide-1": "/images/Mixed%20Trousers%201.jpg",
-    "hero-slide-2": "/images/Brown%20Shoe%201.jpg",
+    "hero-slide-1": "/images/Dark%20Blue%20Trouser%20a.png",
+    "hero-slide-2": "/images/White%20Shirt%20a.png",
     "hero-slide-3": "/images/Black%20Belt%20A3.jpg",
+    "hero-slide-4": "/images/Black%20Shoe%201.png",
   });
 
   const [heroSlide, setHeroSlide] = useState(0);
@@ -1385,10 +1386,10 @@ export default function Home() {
                 <div
                   key={slotKey}
                   style={{ transform: `translateX(${offset === 0 ? 0 : offset === 1 ? 100 : -100}%)` }}
-                  className={`group/image absolute inset-0 flex items-center justify-center ${offset === 1 ? "" : "transition-transform duration-700 ease-in-out"} ${offset === 0 ? "" : "pointer-events-none"}`}
+                  className={`group/image absolute inset-0 flex items-center justify-center ${offset === 1 ? "" : "transition-transform duration-700 ease-in-out"} ${offset === 0 ? "" : "pointer-events-none"} ${offset === 2 ? "invisible" : ""}`}
                 >
                   {image ? (
-                    <img src={image} alt={`Hero showcase ${i + 1}`} className="h-full w-full object-cover" />
+                    <img src={image} alt={`Hero showcase ${i + 1}`} className={`h-full w-full ${slotKey === "hero-slide-3" ? "object-cover" : "bg-white object-contain"}`} />
                   ) : (
                     <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-[#172236]/40">
                       <ImagePlus size={28} strokeWidth={1.5} />
